@@ -1,78 +1,35 @@
-///// CLIENT PROGRAM /////
-#include <iostream>
-#include <windows.h>
-#include <fstream>      // std::ifstream
-#include <string>       // getline
+///// CLIENT SAMPLE PROGRAM /////
+#include "imagepiper.h"
 
-#include "stereopipe.hpp"
-
-using namespace std;
 int main(int argc, const char **argv)
 {
-    wcout << "Connecting to pipe..." << endl;
-    // Open the named pipe
-    // Most of these parameters aren't very relevant for pipes.
-    HANDLE pipe = CreateFile(
-        StereoPipe::pipename,
-        GENERIC_READ, // only need read access
-        FILE_SHARE_READ | FILE_SHARE_WRITE,
-        NULL,
-        OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL,
-        NULL
-    );
-    if (pipe == INVALID_HANDLE_VALUE) {
-        wcout << "Failed to connect to pipe." << endl;
-        // look up error code here using GetLastError()
-        system("pause");
-        return 1;
-    }
-    wcout << "Reading data from pipe..." << endl;
-    std::string message;
-    while(true){
-        // The read operation will block until there is data to read
-        char buffer[StereoPipe::PACKET_SIZE];
-        DWORD numBytesRead = 0;
-        BOOL result = ReadFile(
-            pipe,
-            buffer, // the data from the pipe will be put here
-            StereoPipe::PACKET_SIZE, // number of bytes allocated
-            &numBytesRead, // this will store number of bytes actually read
-            NULL // not using overlapped IO
-        );
-        if (result) {
-            //buffer[numBytesRead / sizeof(char)] = '\0'; // null terminate the string
-            wcout << "Number of bytes read: " << numBytesRead << endl;
-            message += buffer;
-            std::size_t found = message.find('\n');
-            if (found!=std::string::npos){
-                cout << "full message received" << endl;
+    std::cout << "Connecting to pipe..." << std::endl;
+    ImagePiper::Client client = ImagePiper::Client();
+    bool connected = client.open();
+    if (connected){
+        std::cout << "Reading data from file.." << std::endl;
+        //compare against original file
+        // read data from file
+        std::ifstream infile("data.txt");
+        std::string sLine;
+        if (infile.good())
+        {
+            getline(infile, sLine);
+            //cout << sLine << endl;
+        }
+        infile.close();
 
-                //compare against original file
-                // read data from file
-                ifstream infile("data.txt");
-                string sLine;
-                if (infile.good())
-                {
-                    getline(infile, sLine);
-                    //cout << sLine << endl;
-                }
-                infile.close();
-
+        std::string message;
+        for (int i = 0; i < 10; i++){
+            std::cout << "Reading data from pipe.." << std::endl;
+            bool res = client.readLine(message);
+            if (res){
                 if (message.compare(sLine)){
-                    cout << "message matches original" << endl;
+                    std::cout << "Received message matches data from file." << std::endl;
                 }
-
-                //reset message
-                message = "";
             }
-        } else {
-            wcout << "Failed to read data from the pipe." << endl;
-            break;
         }
     }
-    // Close our pipe handle
-    CloseHandle(pipe);
-    wcout << "Done." << endl;
+    client.close();
     return 0;
 }

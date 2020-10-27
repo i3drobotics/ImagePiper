@@ -6,12 +6,13 @@ project(NamedPipes VERSION 0.1)
 # Define GNU standard installation directories
 include(GNUInstallDirs)
 
+include_directories(include)
 
 # add the executable
-add_executable(NamedPipesServer src/server.cpp)
+add_executable(NamedPipesServer src/server.cpp src/imagepiper.cpp)
 
 # add the executable
-add_executable(NamedPipesClient src/client.cpp)
+add_executable(NamedPipesClient src/client.cpp src/imagepiper.cpp)
 
 add_custom_command(
         TARGET NamedPipesServer POST_BUILD
