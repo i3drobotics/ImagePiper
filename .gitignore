@@ -1,2 +1,4 @@
 /build
 /.vscode
+/3rdparty/opencv-3.4.10/opencv
+/install

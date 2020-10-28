@@ -2,11 +2,15 @@
 #include "imagepiper.h"
 #include <future>
 
+#include "pipeconfig.h"
+using namespace std::chrono_literals;
+
 void run(){
     std::cout << "Creating an instance of a named pipe..." << std::endl;
-    ImagePiper::Server server = ImagePiper::Server();
+    Piper::ImageServer server = Piper::ImageServer(PipeConfig::pipe_name,PipeConfig::packet_size);
     bool connected = server.open();
     if (connected){
+        /*
         std::cout << "Reading data from file.." << std::endl;
         // read data from file
         std::ifstream infile("data.txt");
@@ -23,6 +27,22 @@ void run(){
             std::cout << "Sending data over pipe..." << std::endl;
             server.send(sLine);
         }
+        */
+        cv::Mat test_img(2448, 2048, CV_32FC3);
+        std::future<bool> future;
+        bool future_created = false;
+        for (int i = 0; i < 1000; i++){
+            std::cout << "Sending image over pipe..." << std::endl;
+            cv::randu(test_img, cv::Scalar(0, 0, 0), cv::Scalar(1, 1, 1));
+            std::string message = Image2String::mat2str(test_img) + "\n";
+            bool res = server.send(message);
+            if (!res){
+                break;
+            }
+        }
+       /*
+        server.send("Hello World!\n");
+        */
     }
     server.close();
 }
@@ -31,7 +51,7 @@ void runThreaded(){
     using namespace std::chrono_literals;
 
     std::cout << "Creating an instance of a named pipe..." << std::endl;
-    ImagePiper::Server server = ImagePiper::Server();
+    Piper::Server server = Piper::Server(PipeConfig::pipe_name,PipeConfig::packet_size);
     
     bool connected = server.open();
     if (connected){
@@ -49,8 +69,7 @@ void runThreaded(){
         sLine += '\n';
         for (int i = 0; i < 10; i++){
             std::cout << "Sending data over pipe..." << std::endl;
-            //std::thread thread = std::thread(&ImagePiper::Server::send, server, sLine);
-            std::future<bool> future = std::async(&ImagePiper::Server::send, server, sLine);
+            std::future<bool> future = std::async(&Piper::Server::send, server, sLine);
             std::cout << "Waiting for send thread to finish..." << std::endl;
             while(true){ // you could do other stuff here while the data is sent
                 // Use wait_for() with zero milliseconds to check thread status.
@@ -69,6 +88,6 @@ void runThreaded(){
 
 int main(int argc, const char **argv)
 {
-    runThreaded();
+    run();
     return 0;
 }
