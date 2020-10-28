@@ -1,3 +1,6 @@
+#ifndef IMAGEPIPER_H_
+#define IMAGEPIPER_H_
+
 #include "image2string.h"
 #include "piper.h"
 
@@ -16,3 +19,5 @@ namespace Piper {
             bool readImage(cv::Mat &image, long long timeout = 0);
     };
 };
+
+#endif // IMAGEPIPER_H_

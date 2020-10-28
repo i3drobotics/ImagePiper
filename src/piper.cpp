@@ -1,11 +1,19 @@
 #include "piper.h"
 
 namespace Piper {
-    Pipe::Pipe(LPCSTR pipe_name, size_t packet_size): 
-        pipe_name_(pipe_name), 
+
+    const std::string Pipe::pipe_prefix_ = "\\\\.\\pipe\\";
+    Pipe::Pipe(std::string pipe_name, size_t packet_size): 
+        pipe_name_(pipe_name),
+        full_pipe_name_(pipe_prefix_+pipe_name),
+        full_pipe_name_w_((pipe_prefix_+pipe_name).c_str()), 
         packet_size_(packet_size){}
 
-    LPCSTR Pipe::getPipeName(){return pipe_name_;}
+    std::string Pipe::getPipeName(){return pipe_name_;}
+
+    std::string Pipe::getFullPipeName(){return full_pipe_name_;}
+
+    LPCSTR Pipe::getFullPipeNameW(){return full_pipe_name_w_;}
 
     size_t Pipe::getPacketSize(){return packet_size_;}
 
@@ -44,14 +52,14 @@ namespace Piper {
         return true;
     }
 
-    Server::Server(LPCSTR pipe_name, size_t packet_size) : 
+    Server::Server(std::string pipe_name, size_t packet_size) : 
         Pipe(pipe_name,packet_size){}
 
     bool Server::open(){
         DWORD pipe_mode = PIPE_ACCESS_OUTBOUND;
         // Create a pipe to send data
         pipe_ = CreateNamedPipe(
-            pipe_name_, // name of the pipe
+            full_pipe_name_w_, // name of the pipe
             pipe_mode, // 1-way pipe -- send only
             PIPE_TYPE_BYTE, // send data as a byte stream
             1, // only allow 1 instance of this pipe
@@ -102,13 +110,13 @@ namespace Piper {
         return true;
     }
 
-    Client::Client(LPCSTR pipe_name, size_t packet_size) : Pipe(pipe_name,packet_size){}
+    Client::Client(std::string pipe_name, size_t packet_size) : Pipe(pipe_name,packet_size){}
 
     bool Client::open(){
         // Open the named pipe
         // Most of these parameters aren't very relevant for pipes.
         pipe_ = CreateFile(
-            pipe_name_,
+            full_pipe_name_w_,
             GENERIC_READ, // only need read access
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL,

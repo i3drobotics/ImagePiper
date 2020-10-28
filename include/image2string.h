@@ -1,12 +1,12 @@
+#ifndef IMAGE2STRING_H_
+#define IMAGE2STRING_H_
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 
 #include <vector>
 #include <string>
-
-#ifndef IMAGE2STRING_H_
-#define IMAGE2STRING_H_
 
 /**
  * Classe que converte as imagens para base64 e virse e versa
@@ -45,4 +45,4 @@ private:
 
 };
 
-#endif /* CONVERTIMAGE_H_ */
+#endif /* IMAGE2STRING_H_ */

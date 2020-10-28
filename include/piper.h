@@ -1,3 +1,6 @@
+#ifndef PIPER_H_
+#define PIPER_H_
+
 #include <iostream>
 #include <vector>
 #include <iostream>
@@ -13,9 +16,11 @@ namespace Piper {
     // used to avoid repeated code
     class Pipe {
         public:
-            Pipe(LPCSTR pipe_name, size_t packet_size);
+            Pipe(std::string pipe_name, size_t packet_size);
 
-            LPCSTR getPipeName();
+            std::string getPipeName();
+            LPCSTR getFullPipeNameW();
+            std::string getFullPipeName();
             size_t getPacketSize();
             std::vector<std::string> splitPackets(std::string message, size_t packet_size, bool pad_packets = true);
 
@@ -27,14 +32,17 @@ namespace Piper {
         protected:
             void padString(std::string& str, size_t packet_size, char padding_char = '\r');
 
-            LPCSTR pipe_name_;
+            static const std::string pipe_prefix_;
+            std::string pipe_name_;
+            std::string full_pipe_name_;
+            LPCSTR full_pipe_name_w_;
             size_t packet_size_;
             HANDLE pipe_;
     };
 
     class Server : public Pipe {
         public:
-            Server(LPCSTR pipe_name, size_t packet_size);
+            Server(std::string pipe_name, size_t packet_size);
 
             bool open();
             bool send(std::string message);
@@ -42,10 +50,12 @@ namespace Piper {
 
     class Client : public Pipe  {
         public:
-            Client(LPCSTR pipe_name, size_t packet_size);
+            Client(std::string pipe_name, size_t packet_size);
 
             bool open();
             bool readPacket(std::string & packet);
             bool readLine(std::string & line, long long timeout=0); // timeout=0 means never timeout
     };
 };
+
+#endif /* PIPER_H_ */
