@@ -1,7 +1,7 @@
 #include "imagepiper.h"
 
 namespace Piper {
-        ImageServer::ImageServer(LPCSTR pipe_name, size_t packet_size) : 
+        ImageServer::ImageServer(std::string pipe_name, size_t packet_size) : 
         Server(pipe_name,packet_size){}
 
         bool ImageServer::sendImage(cv::Mat image){
@@ -10,7 +10,7 @@ namespace Piper {
             return send(message);
         }
 
-        ImageClient::ImageClient(LPCSTR pipe_name, size_t packet_size) : 
+        ImageClient::ImageClient(std::string pipe_name, size_t packet_size) : 
         Client(pipe_name,packet_size){}
 
         bool ImageClient::readImage(cv::Mat &image, long long timeout){
