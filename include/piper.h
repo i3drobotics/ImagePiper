@@ -9,6 +9,7 @@
 #include <chrono>       // chrono::steady_clock
 #include <thread>       // std::thread
 
+#define NOMINMAX
 #include <windows.h>
 
 namespace Piper {
@@ -19,7 +20,7 @@ namespace Piper {
             Pipe(std::string pipe_name, size_t packet_size);
 
             std::string getPipeName();
-            LPCSTR getFullPipeNameW();
+            LPCWSTR getFullPipeNameW();
             std::string getFullPipeName();
             size_t getPacketSize();
             std::vector<std::string> splitPackets(std::string message, size_t packet_size, bool pad_packets = true);
@@ -35,7 +36,7 @@ namespace Piper {
             static const std::string pipe_prefix_;
             std::string pipe_name_;
             std::string full_pipe_name_;
-            LPCSTR full_pipe_name_w_;
+            LPCWSTR full_pipe_name_w_;
             size_t packet_size_;
             HANDLE pipe_;
     };
