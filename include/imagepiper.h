@@ -10,6 +10,7 @@ namespace Piper {
             ImageServer(std::string pipe_name, size_t packet_size);
 
             bool sendImage(cv::Mat image);
+            bool sendImageThreaded(cv::Mat image);
     };
 
     class ImageClient : public Client  {

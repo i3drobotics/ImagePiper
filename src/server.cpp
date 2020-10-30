@@ -1,14 +1,14 @@
 ///// SERVER SAMPLE PROGRAM /////
 #include "imagepiper.h"
-#include <future>
-
 #include "pipeconfig.h"
-using namespace std::chrono_literals;
 
 void run(){
     std::cout << "Creating an instance of a named pipe..." << std::endl;
     Piper::ImageServer server = Piper::ImageServer(PipeConfig::pipe_name,PipeConfig::packet_size);
-    bool connected = server.open();
+    bool connected = server.openThreaded();
+    while(!server.isOpen()){
+        std::cout << "Waiting for pipe to be open" << std::endl;
+    }
     if (connected){
         /*
         std::cout << "Reading data from file.." << std::endl;
@@ -29,8 +29,6 @@ void run(){
         }
         */
         cv::Mat test_img(2448, 2048, CV_32FC3);
-        std::future<bool> future;
-        bool future_created = false;
         for (int i = 0; i < 1000; i++){
             std::cout << "Sending image over pipe..." << std::endl;
             cv::randu(test_img, cv::Scalar(0, 0, 0), cv::Scalar(1, 1, 1));
@@ -47,6 +45,7 @@ void run(){
     server.close();
 }
 
+/*
 void runThreaded(){
     using namespace std::chrono_literals;
 
@@ -85,6 +84,7 @@ void runThreaded(){
     }
     server.close();
 }
+*/
 
 int main(int argc, const char **argv)
 {

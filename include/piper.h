@@ -8,6 +8,7 @@
 #include <string>       // getline
 #include <chrono>       // chrono::steady_clock
 #include <thread>       // std::thread
+#include <future>       // std::future
 
 #define NOMINMAX
 #include <windows.h>
@@ -25,10 +26,11 @@ namespace Piper {
             size_t getPacketSize();
             std::vector<std::string> splitPackets(std::string message, size_t packet_size, bool pad_packets = true);
 
-            virtual bool open() = 0;
-            bool close();
+            bool isOpen();
 
-            void waitForThreadFinish();
+            virtual bool open() = 0;
+            bool openThreaded();
+            bool close();
 
         protected:
             void padString(std::string& str, size_t packet_size, char padding_char = '\r');
@@ -39,6 +41,11 @@ namespace Piper {
             LPCWSTR full_pipe_name_w_;
             size_t packet_size_;
             HANDLE pipe_;
+
+            std::future<bool> future_opener_;
+            bool future_opener_init_ = false;
+            bool pipe_open_ = false;
+            bool try_connecting_ = true;
     };
 
     class Server : public Pipe {
@@ -47,6 +54,13 @@ namespace Piper {
 
             bool open();
             bool send(std::string message);
+            bool sendThreaded(std::string message);
+
+            bool isSendThreadBusy();
+
+        protected:
+            std::future<bool> future_sender_;
+            bool future_sender_init_ = false;
     };
 
     class Client : public Pipe  {

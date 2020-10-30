@@ -10,6 +10,17 @@ namespace Piper {
             return send(message);
         }
 
+        bool ImageServer::sendImageThreaded(cv::Mat image){
+            if (!isSendThreadBusy()){
+                future_sender_ = std::async(&ImageServer::sendImage, this, image);
+                future_sender_init_ = true;
+                return true;
+            } else {
+                std::cerr << "Pipes send thread is busy" << std::endl;
+                return false;
+            }
+        }
+
         ImageClient::ImageClient(std::string pipe_name, size_t packet_size) : 
         Client(pipe_name,packet_size){}
 

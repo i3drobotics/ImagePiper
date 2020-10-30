@@ -37,12 +37,12 @@ int main(int argc, const char **argv)
         }
         */
         cv::Mat image;
-        for (int i = 0; i < 1000; i++){
+        while(true){
             bool res = client.readImage(image);
             if (res){
                 std::cout << "Image message received" << std::endl;
                 cv::imshow("Client",image);
-                cv::resizeWindow("Client", 600,600);
+                //cv::resizeWindow("Client", 600,600);
                 cv::waitKey(1);
             } else {
                 break;
