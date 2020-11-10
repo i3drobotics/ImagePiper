@@ -41,6 +41,7 @@ int main(int argc, const char **argv)
             bool res = client.readImage(image);
             if (res){
                 std::cout << "Image message received" << std::endl;
+                std::cout << "Type: " << image.type() << std::endl;
                 cv::imshow("Client",image);
                 //cv::resizeWindow("Client", 600,600);
                 cv::waitKey(1);

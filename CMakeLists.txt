@@ -50,16 +50,16 @@ target_link_libraries(${PROJECT_NAME}Client ${OpenCV_LIBS})
 if(CMAKE_BUILD_TYPE MATCHES Release)
 # Define OpenCV dlls (will be copied to install folder)
 set(OpenCV_DLLS
-        ${OpenCV_DIR}/x64/vc15/bin/opencv_world3410.dll
-        ${OpenCV_DIR}/x64/vc15/bin/opencv_ffmpeg3410_64.dll
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_world440.dll
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_videoio_ffmpeg440_64.dll
 )
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
 # Define OpenCV dlls (will be copied to install folder)
 set(OpenCV_DLLS
-        ${OpenCV_DIR}/x64/vc15/bin/opencv_world3410d.dll
-        ${OpenCV_DIR}/x64/vc15/bin/opencv_ffmpeg3410_64.dll
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_world440d.dll
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_videoio_ffmpeg440_64.dll
 )
 endif()
 
