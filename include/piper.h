@@ -20,10 +20,15 @@ namespace Piper {
         public:
             Pipe(std::string pipe_name, size_t packet_size);
 
+            
+            void setPipeName(std::string pipe_name);
+            void setPacketSize(int packet_size);
+
             std::string getPipeName();
             LPCWSTR getFullPipeNameW();
             std::string getFullPipeName();
             size_t getPacketSize();
+            
             std::vector<std::string> splitPackets(std::string message, size_t packet_size, bool pad_packets = true);
 
             bool isOpen();

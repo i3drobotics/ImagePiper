@@ -4,10 +4,16 @@ namespace Piper {
 
     const std::string Pipe::pipe_prefix_ = "\\\\.\\pipe\\";
     Pipe::Pipe(std::string pipe_name, size_t packet_size): 
-        pipe_name_(pipe_name),
-        full_pipe_name_(pipe_prefix_+pipe_name),
         packet_size_(packet_size)
     {
+        setPipeName(pipe_name);
+    }
+
+    void Pipe::setPacketSize(int packet_size){packet_size_ = packet_size;}
+    
+    void Pipe::setPipeName(std::string pipe_name){
+        pipe_name_ = pipe_name;
+        full_pipe_name_ = pipe_prefix_+pipe_name;
         std::wstring stemp = std::wstring(full_pipe_name_.begin(), full_pipe_name_.end());
         full_pipe_name_w_ = stemp.c_str();
     }

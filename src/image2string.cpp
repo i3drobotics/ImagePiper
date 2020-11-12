@@ -127,8 +127,9 @@ std::string Image2String::mat2str(const cv::Mat& m, int quality)
 {
     uchar* result;
     std::vector<uchar> buf;
+    bool uchar16 = (m.type() == CV_16UC1 || m.type() == CV_16UC2 || m.type() == CV_16UC3 || m.type() == CV_16UC4);
     bool floating_point = (m.type() == CV_32FC1 || m.type() == CV_32FC2 || m.type() == CV_32FC3 || m.type() == CV_32FC4);
-    if (floating_point){ //float point precision requires tiff (note: quality setting is ignored when using tiff)
+    if (floating_point || uchar16){ //float point precision requires tiff (note: quality setting is ignored when using tiff)
         cv::imencode(".tiff", m, buf);
         result = reinterpret_cast<uchar*> (&buf[0]);
     } else {

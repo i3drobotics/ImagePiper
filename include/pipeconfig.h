@@ -6,7 +6,8 @@
 namespace PipeConfig {
     std::string pipe_name = "i3dr_image_pipe";
     //int packet_size = 524288;
-    int packet_size = 4194304;
+    //int packet_size = 4194304;
+    int packet_size = 16777216;
 }
 
 #endif // PIPECONFIG_H_

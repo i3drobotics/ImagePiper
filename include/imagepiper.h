@@ -11,6 +11,8 @@ namespace Piper {
 
             bool sendImage(cv::Mat image);
             bool sendImageThreaded(cv::Mat image);
+            bool sendImagePair(cv::Mat image1, cv::Mat image2);
+            bool sendImagePairThreaded(cv::Mat image1, cv::Mat image2);
     };
 
     class ImageClient : public Client  {
