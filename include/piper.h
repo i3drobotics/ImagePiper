@@ -37,6 +37,8 @@ namespace Piper {
             bool openThreaded();
             bool close();
 
+            ~Pipe();
+
         protected:
             void padString(std::string& str, size_t packet_size, char padding_char = '\r');
 

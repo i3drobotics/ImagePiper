@@ -84,7 +84,7 @@ namespace Piper {
     }
 
     bool Pipe::close(){
-        future_opener_init_ = false;
+        //future_opener_init_ = false;
         try_connecting_ = false;
         if (isOpen()){
             // Close the pipe (automatically disconnects client too)
@@ -94,18 +94,23 @@ namespace Piper {
         return true;
     }
 
+    Pipe::~Pipe(){
+    }
+
     Server::Server(std::string pipe_name, size_t packet_size) : 
         Pipe(pipe_name,packet_size){}
 
     bool Server::open(){
         try_connecting_ = true;
-        //DWORD pipe_mode = PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED;
-        DWORD pipe_mode = PIPE_ACCESS_OUTBOUND;
+        //DWORD pipe_open_mode = PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED;
+        DWORD pipe_open_mode = PIPE_ACCESS_OUTBOUND;
+        //DWORD pipe_mode = PIPE_TYPE_BYTE | PIPE_NOWAIT
+        DWORD pipe_mode = PIPE_TYPE_BYTE;
         // Create a pipe to send data
         pipe_ = CreateNamedPipeA(
             full_pipe_name_.c_str(), // name of the pipe
-            pipe_mode, // 1-way pipe -- send only
-            PIPE_TYPE_BYTE, // send data as a byte stream
+            pipe_open_mode, // 1-way pipe -- send only
+            pipe_mode, // send data as a byte stream
             1, // only allow 1 instance of this pipe
             0, // no outbound buffer
             0, // no inbound buffer
@@ -129,19 +134,6 @@ namespace Piper {
             pipe_open_ = false;
             return pipe_open_;
         }
-       /*
-        // This call blocks until a client process connects to the pipe
-        while (try_connecting_) { //TODO add optional timeout
-            ConnectNamedPipe(pipe_, &overlapped);
-            DWORD err = GetLastError();
-            if (err == ERROR_PIPE_CONNECTED)
-            {
-                break;
-            } else {
-                //std::cout << err << std::endl;
-            }
-        }
-        */
         pipe_open_ = true;
         return pipe_open_;
     }
